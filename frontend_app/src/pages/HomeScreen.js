@@ -24,25 +24,25 @@ export default Blits.Component('HomeScreen', {
   },
   template: `
     <Element w="1920" h="1080" :color="$bgColor">
-      <Text x="120" y="64" fontSize="44" :textColor="$textColor" content="Recipe Explorer" />
+      <Text x="120" y="64" fontSize="44" textColor="0x000000ff" content="Recipe Explorer" />
       <Element x="120" y="120">
         <SearchBar placeholder="Search recipes, tags, ingredients..." :onSearch="$onSearch" />
       </Element>
 
       <Element x="120" y="240" w="1680" h="760">
-        <Element :alpha="$loading ? 1 : 0" x="740" y="280">
+        <Element :alpha="$loadingAlpha" x="740" y="280">
           <Spinner label="Loading recipes..." />
         </Element>
 
-        <Element :alpha="$error ? 1 : 0" x="240" y="200">
+        <Element :alpha="$errorAlpha" x="240" y="200">
           <ErrorState :message="$error" />
         </Element>
 
-        <Element :alpha="$showEmpty ? 1 : 0" x="240" y="200">
+        <Element :alpha="$emptyAlpha" x="240" y="200">
           <EmptyState message="No recipes found. Try another search." />
         </Element>
 
-        <Element :alpha="$showGrid ? 1 : 0" w="1680" h="760">
+        <Element :alpha="$gridAlpha" w="1680" h="760">
           <Element 
             :for="(item, idx) in $recipesWithPos" 
             :key="$item.id"
@@ -54,16 +54,15 @@ export default Blits.Component('HomeScreen', {
         </Element>
       </Element>
 
-      <Text x="120" y="1020" fontSize="20" :textColor="$textMuted" content="Use arrows to focus, Enter to open. Back to exit." />
+      <Text x="120" y="1020" fontSize="20" textColor="0x000000ff" content="Use arrows to focus, Enter to open. Back to exit." />
     </Element>
   `,
   computed: {
     bgColor() { return theme.colors.background },
-    textColor() { return theme.colors.text },
-    textMuted() { return theme.colors.textMuted },
-    showGrid() {
-      return !this.loading && !this.error && this.recipes.length > 0
-    },
+    loadingAlpha() { return this.loading ? 1 : 0 },
+    errorAlpha() { return this.error ? 1 : 0 },
+    emptyAlpha() { return (!this.loading && !this.error && this.recipes.length === 0) ? 1 : 0 },
+    gridAlpha() { return (!this.loading && !this.error && this.recipes.length > 0) ? 1 : 0 },
     recipesWithPos() {
       const arr = Array.isArray(this.recipes) ? this.recipes : []
       const out = []
@@ -110,7 +109,7 @@ export default Blits.Component('HomeScreen', {
         this.recipes = Array.isArray(data) ? data : []
         this.focusIndex = 0
       } catch (e) {
-        this.error = e?.message || 'Failed to load recipes.'
+        this.error = (e && e.message) ? e.message : 'Failed to load recipes.'
       } finally {
         this.loading = false
       }

@@ -9,8 +9,8 @@ const colors = {
   secondary: 0xf59e0bff, // Amber 500
   background: 0xf9fafbff, // Gray-50
   surface: 0xffffffff, // White
-  text: 0x111827ff, // Gray-900
-  textMuted: 0x6b7280ff, // Gray-500
+  text: 0x000000ff, // Force black text globally per requirement
+  textMuted: 0x000000ff, // Use black for all text variants as requested
   error: 0xef4444ff, // Red-500
   overlay: 0x00000033, // black 20%
 }
