@@ -15,25 +15,25 @@ export default Blits.Component('Details', {
     }
   },
   template: `
-    <Element w="1920" h="1080" :color="${theme.colors.background}">
-      <Element x="0" y="0" w="1920" h="420" :src="$recipe && $recipe.image ? $recipe.image : 'assets/placeholder.jpg'" />
-      <Element x="0" y="0" w="1920" h="420" :color="${theme.colors.overlay}" alpha="0.15" />
+    <Element w="1920" h="1080" :color="$bgColor">
+      <Element x="0" y="0" w="1920" h="420" :src="$heroSrc" h="420" />
+      <Element x="0" y="0" w="1920" h="420" :color="$overlayColor" alpha="0.15" />
 
-      <Element x="120" y="440" w="1680" h="80" :color="${theme.colors.surface}" radius="${theme.radii.lg}">
-        <Text x="24" y="22" fontSize="36" :textColor="${theme.colors.text}" :content="$recipe && $recipe.title ? $recipe.title : 'Recipe'" />
+      <Element x="120" y="440" w="1680" h="80" :color="$surfaceColor" radius="$radiusLg">
+        <Text x="24" y="22" fontSize="36" :textColor="$textColor" :content="$titleText" />
       </Element>
 
-      <Element x="120" y="540" w="800" h="440" :color="${theme.colors.surface}" radius="${theme.radii.lg}">
-        <Text x="24" y="20" fontSize="28" :textColor="${theme.colors.text}" content="Ingredients" />
+      <Element x="120" y="540" w="800" h="440" :color="$surfaceColor" radius="$radiusLg">
+        <Text x="24" y="20" fontSize="28" :textColor="$textColor" content="Ingredients" />
         <Element x="24" y="64" w="752" h="356">
-          <Text :for="(ing, idx) in $recipe && $recipe.ingredients ? $recipe.ingredients : []" :key="$idx" :y="$idx * 32" fontSize="22" :textColor="${theme.colors.text}" :content="'• ' + $ing" />
+          <Text :for="(ing, idx) in $ingredients" :key="$idx" :y="$idx * 32" fontSize="22" :textColor="$textColor" :content="$bullet(ing)" />
         </Element>
       </Element>
 
-      <Element x="940" y="540" w="860" h="440" :color="${theme.colors.surface}" radius="${theme.radii.lg}">
-        <Text x="24" y="20" fontSize="28" :textColor="${theme.colors.text}" content="Steps" />
+      <Element x="940" y="540" w="860" h="440" :color="$surfaceColor" radius="$radiusLg">
+        <Text x="24" y="20" fontSize="28" :textColor="$textColor" content="Steps" />
         <Element x="24" y="64" w="812" h="356">
-          <Text :for="(st, idx) in $recipe && $recipe.steps ? $recipe.steps : []" :key="$idx" :y="$idx * 34" fontSize="22" :textColor="${theme.colors.text}" :content="($idx + 1) + '. ' + $st" />
+          <Text :for="(st, idx) in $steps" :key="$idx" :y="$idx * 34" fontSize="22" :textColor="$textColor" :content="$stepNum(idx, st)" />
         </Element>
       </Element>
 
@@ -44,9 +44,41 @@ export default Blits.Component('Details', {
         <ErrorState :message="$error" />
       </Element>
 
-      <Text x="120" y="1000" fontSize="20" :textColor="${theme.colors.textMuted}" content="Press Back to return" />
+      <Text x="120" y="1000" fontSize="20" :textColor="$textMuted" content="Press Back to return" />
     </Element>
   `,
+  computed: {
+    bgColor() { return theme.colors.background },
+    surfaceColor() { return theme.colors.surface },
+    overlayColor() { return theme.colors.overlay },
+    textColor() { return theme.colors.text },
+    textMuted() { return theme.colors.textMuted },
+    radiusLg() { return theme.radii.lg },
+    heroSrc() {
+      const r = this.recipe
+      return r && r.image ? r.image : 'assets/placeholder.jpg'
+    },
+    titleText() {
+      const r = this.recipe
+      return r && r.title ? r.title : 'Recipe'
+    },
+    ingredients() {
+      const r = this.recipe
+      return Array.isArray(r?.ingredients) ? r.ingredients : []
+    },
+    steps() {
+      const r = this.recipe
+      return Array.isArray(r?.steps) ? r.steps : []
+    },
+  },
+  methods: {
+    bullet(ing) {
+      return `• ${ing}`
+    },
+    stepNum(idx, st) {
+      return `${idx + 1}. ${st}`
+    },
+  },
   async onMounted() {
     try {
       this.loading = true

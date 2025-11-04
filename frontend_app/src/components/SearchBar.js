@@ -17,43 +17,49 @@ export default Blits.Component('SearchBar', {
   },
   components: {},
   template: `
-    <Element w="1520" h="80" :color="${theme.colors.surface}" radius="${theme.radii.lg}">
-      <!-- Outline when focused -->
+    <Element w="1520" h="80" :color="$surfaceColor" radius="$radiusLg">
       <Element
         x="-4" y="-4" 
         w="1528" h="88"
-        :color="${theme.colors.primary}"
-        radius="${theme.radii.lg + 2}"
+        :color="$primaryColor"
+        radius="$radiusLgOutline"
         :alpha="$focused ? 0.35 : 0"
       />
-      <!-- Magnifier icon substitute -->
-      <Element x="24" y="22" w="36" h="36" :color="${theme.colors.primarySoft}" radius="18" />
+      <Element x="24" y="22" w="36" h="36" :color="$primarySoft" radius="18" />
       <Text
         x="80"
         y="26"
         :content="$valueDisplay"
-        :textColor="${theme.colors.text}"
+        :textColor="$textColor"
         fontFace="Regular"
         fontSize="28"
       />
-      <Element :x="$caretX" y="24" w="2" h="32" :color="${theme.colors.text}" :alpha="$showCaret ? 1 : 0"/>
+      <Element :x="$caretX" y="24" w="2" h="32" :color="$textColor" :alpha="$showCaret ? 1 : 0"/>
       <Text
         x="80"
         y="26"
         :content="$placeholderText"
-        :alpha="$value.length ? 0 : 0.5"
-        :textColor="${theme.colors.text}"
+        :alpha="$valueAlpha"
+        :textColor="$textColor"
         fontFace="Regular"
         fontSize="28"
       />
     </Element>
   `,
   computed: {
+    surfaceColor() { return theme.colors.surface },
+    primaryColor() { return theme.colors.primary },
+    primarySoft() { return theme.colors.primarySoft },
+    textColor() { return theme.colors.text },
+    radiusLg() { return theme.radii.lg },
+    radiusLgOutline() { return theme.radii.lg + 2 },
     valueDisplay() {
       return this.value
     },
+    valueAlpha() {
+      return this.value.length ? 0 : 0.5
+    },
     caretX() {
-      // Simple estimate: 16 px per character at fontSize 28
       return 80 + Math.max(0, this.value.length) * 16
     },
     showCaret() {

@@ -23,8 +23,8 @@ export default Blits.Component('HomeScreen', {
     }
   },
   template: `
-    <Element w="1920" h="1080" :color="${theme.colors.background}">
-      <Text x="120" y="64" fontSize="44" :textColor="${theme.colors.text}" content="Recipe Explorer" />
+    <Element w="1920" h="1080" :color="$bgColor">
+      <Text x="120" y="64" fontSize="44" :textColor="$textColor" content="Recipe Explorer" />
       <Element x="120" y="120">
         <SearchBar placeholder="Search recipes, tags, ingredients..." :onSearch="$onSearch" />
       </Element>
@@ -42,7 +42,6 @@ export default Blits.Component('HomeScreen', {
           <EmptyState message="No recipes found. Try another search." />
         </Element>
 
-        <!-- Inline grid rendering with direct RecipeCard usage -->
         <Element :alpha="$showGrid ? 1 : 0" w="1680" h="760">
           <Element 
             :for="(item, idx) in $recipesWithPos" 
@@ -55,10 +54,13 @@ export default Blits.Component('HomeScreen', {
         </Element>
       </Element>
 
-      <Text x="120" y="1020" fontSize="20" :textColor="${theme.colors.textMuted}" content="Use arrows to focus, Enter to open. Back to exit." />
+      <Text x="120" y="1020" fontSize="20" :textColor="$textMuted" content="Use arrows to focus, Enter to open. Back to exit." />
     </Element>
   `,
   computed: {
+    bgColor() { return theme.colors.background },
+    textColor() { return theme.colors.text },
+    textMuted() { return theme.colors.textMuted },
     showGrid() {
       return !this.loading && !this.error && this.recipes.length > 0
     },
